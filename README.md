@@ -2,12 +2,15 @@ mariadb-create-backup
 =====================
 A simple utility to take periodic backups for mariadb.
 
+This app was originally ported from https://github.com/omegazeng/run-mariabackup :-)
+
 Requirements
 ------------
 This utility runs on Linux only. It assumes that the following are installed:
 - s6-setuidgid
 - mariabackup
 - mysql
+- db user with backup privileges (see https://mariadb.com/kb/en/mariabackup-overview/#authentication-and-privileges)
 
 Backup directory layout
 -----------------------
