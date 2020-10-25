@@ -9,6 +9,7 @@ import (
 	"time"
 	"strings"
 	"errors"
+	"regexp"
 )
 
 func backupDB() error {
@@ -208,7 +209,9 @@ func createSnapshot(targetDir, parentDir string, runargs string) error {
 		bkupCmd = fmt.Sprintf(bkupCmd, runargs, targetDir, targetDir)
 	}
 	
-	verboseLog("exec :: s6-setuidgid mysql -c '%s'", bkupCmd)
+	passwdArgRE := regexp.MustCompile(`\s--password=\S+\s`)
+	bkupCmdReduct := passwdArgRE.ReplaceAllString(bkupCmd, " --password=***** ")
+	verboseLog("exec :: s6-setuidgid mysql -c '%s'", bkupCmdReduct)
 	binO, binE, err := execCmd("s6-setuidgid", "", []string{ "mysql", "sh", "-c", bkupCmd }, int(backupTimeout))
 
 	logErr := ioutil.WriteFile(filepath.Join(targetDir, "stdout.log"), []byte(binO), 0640)
